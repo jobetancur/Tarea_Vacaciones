@@ -1,0 +1,93 @@
+BASES DE DATOS - BLOG
+
+Integrantes - Equipo 10:
+Albert Urbina
+Alejandro Betancourt
+Daniel Sanchez
+
+--- DBEADER ---
+table users {
+  id serial [pk]
+  name varchar [not null]
+  email varchar [not null, unique]
+  userName varchar [not null, unique]
+  password varchar [not null]
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+table posts {
+  id serial [pk]
+  title varchar [not null]
+  content text [not null]
+  user_id int [not null]
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+table coments {
+  id serial [pk]
+  content text [not null]
+  post_id int [not null]
+  user_id int [not null]
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+
+Ref: "users"."id" < "posts"."user_id"
+
+Ref: "posts"."id" < "coments"."post_id"
+
+Ref: "users"."id" < "coments"."user_id"
+
+
+---- CODIGO SQL ---
+CREATE TABLE "users" (
+  "id" serial PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "email" varchar UNIQUE NOT NULL,
+  "userName" varchar UNIQUE NOT NULL,
+  "password" varchar NOT NULL,
+  "created_at" timestamp DEFAULT 'now()',
+  "updated_at" timestamp DEFAULT 'now()'
+);
+
+CREATE TABLE "posts" (
+  "id" serial PRIMARY KEY,
+  "title" varchar NOT NULL,
+  "content" text NOT NULL,
+  "user_id" int NOT NULL,
+  "created_at" timestamp DEFAULT 'now()',
+  "updated_at" timestamp DEFAULT 'now()'
+);
+
+CREATE TABLE "coments" (
+  "id" serial PRIMARY KEY,
+  "content" text NOT NULL,
+  "post_id" int NOT NULL,
+  "user_id" int NOT NULL,
+  "created_at" timestamp DEFAULT 'now()',
+  "updated_at" timestamp DEFAULT 'now()'
+);
+
+ALTER TABLE "posts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "coments" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
+
+ALTER TABLE "coments" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+insert into users (name, email, user_name, password) values 
+('albert', 'albert@gmail.com', 'aurbina', '1234'),
+('alejandro', 'alejandro@gmail.com', 'abetancourt', '9876'),
+('daniel', 'daniel@gmail.com', 'dsanchez', '85246');
+
+insert into posts (title, content, user_id) values 
+('El agua del mar no es azul', 'El agua del mar no es azul, solo refleja el color del cielo', 1),
+('post de prueba n2', 'este es un contenido de prueba', 2),
+('¿quien va a ganar el mundial?', 'México va a ganar', 3);
+
+insert into coments (content, post_id, user_id) values
+('replica al post de prueba', 3, 1),
+('totalmente de acuerdo', 4, 2),
+('yo creo que el agua es blanca', 2, 3);
